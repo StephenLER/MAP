@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>图增强电影问答（流式 + Markdown）</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="gradient-bg"></div>
+      <div class="app-container">
+        <header class="app-header">
+          <h1>图增强电影问答</h1>
+          <p>
+            后端：NetworkX 知识图谱 + Qwen（Plan + 深度思考）<br />
+            前端：原生 HTML / CSS / JS。
+          </p>
+        </header>
+
+        <main>
+          <section class="input-section">
+            <form class="input-form" id="qa-form">
+              <label class="input-label" for="question-input">
+                输入你的问题（中文 / 英文均可）：
+              </label>
+              <textarea
+                id="question-input"
+                class="input-textarea"
+                rows="3"
+                placeholder="例如：和《Inception》同一个导演的其他电影有哪些？"
+              ></textarea>
+              <div class="input-actions">
+                <button class="btn-primary" type="submit" id="submit-btn">
+                  提问
+                </button>
+                <span class="loading-dot" id="loading-indicator" hidden>
+                  ● ● ●
+                </span>
+              </div>
+            </form>
+            <div class="error-box" id="error-box" hidden></div>
+          </section>
+
+          <section class="result-section" id="result-section" hidden>
+            <div class="question-pill" id="question-pill">
+              <span class="pill-label">问题</span>
+              <span class="pill-text" id="question-text"></span>
+            </div>
+
+            <!-- Step 1: Plan -->
+            <div class="card">
+              <div class="card-header">
+                <span class="step-tag">Step 1</span>
+                <h2>查询计划（Plan）</h2>
+              </div>
+              <div class="card-body">
+                <p class="card-subtitle">
+                  使用 <code>qwen3-max</code> 将自然语言解析为结构化查询计划。
+                </p>
+                <div class="plan-summary">
+                  <div>
+                    <span class="plan-label">task：</span>
+                    <span class="plan-value" id="plan-task">（未生成）</span>
+                  </div>
+                  <div>
+                    <span class="plan-label">params：</span>
+                    <span class="plan-value" id="plan-params">（未生成）</span>
+                  </div>
+                </div>
+                <details class="details-block" id="plan-details" hidden>
+                  <summary>查看完整 Plan JSON</summary>
+                  <pre class="json-view" id="plan-json"></pre>
+                </details>
+              </div>
+            </div>
+
+            <!-- Step 2: Graph Result -->
+            <div class="card">
+              <div class="card-header">
+                <span class="step-tag step-tag-2">Step 2</span>
+                <h2>图查询结果（Graph Result）</h2>
+              </div>
+              <div class="card-body">
+                <p class="card-subtitle">
+                  使用本地 <code>NetworkX</code> 知识图谱执行查询计划。
+                </p>
+                <details class="details-block" id="graph-details" hidden>
+                  <summary>查看 Graph Result JSON</summary>
+                  <pre class="json-view" id="graph-json"></pre>
+                </details>
+              </div>
+            </div>
+
+            <!-- Step 3: Reasoning + Answer -->
+            <div class="card">
+              <div class="card-header">
+                <span class="step-tag step-tag-3">Step 3</span>
+                <h2>思考过程 & 最终回答</h2>
+              </div>
+              <div class="card-body">
+                <p class="card-subtitle">
+                  使用 <code>qwen3-8b</code> 深度思考模式，根据图结果生成答案。
+                </p>
+                <div class="two-column">
+                  <div class="column">
+                    <h3 class="mini-title">思考过程（reasoning）</h3>
+                    <pre class="reasoning-view" id="reasoning-view"></pre>
+                  </div>
+                  <div class="column">
+                    <h3 class="mini-title">最终回答（Markdown 渲染）</h3>
+                    <!-- 这里会用 innerHTML 渲染 Markdown -->
+                    <div class="answer-view" id="answer-view"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="app-footer">
+          Movie KG QA • GraphML + Qwen API • 原生前端流式 + Markdown
+        </footer>
+      </div>
+    </div>
+
+    <!-- Markdown 渲染库：marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 为了安全起见，用 DOMPurify 过滤一下 HTML（可选但推荐） -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+
+    <script src="app.js"></script>
+  </body>
+</html>
