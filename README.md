@@ -7,7 +7,7 @@
 
 ## 1. 数据来源（Data Sources）
 
-当前使用的数据文件示例（可根据实际路径修改）：
+当前使用的数据文件示例：
 
 - `data/IMDb_Dataset.csv`
 - `data/IMDb_Dataset_2.csv`
